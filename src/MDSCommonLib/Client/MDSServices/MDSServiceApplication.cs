@@ -389,10 +389,16 @@ namespace MDS.Client.MDSServices
                 try
                 {
                     var returnValue = Service.GetType().GetMethod(methodName).Invoke(Service, parameters);
-                    if (Service.IncomingMessage.TransmitRule != MessageTransmitRules.DirectlySend)
-                    {
-                        AcknowledgeMessage(Service.IncomingMessage);
-                    }
+                    
+                    /* 
+                     * Removed: This was causing an issue when either not throwing exception or not rejecting a message before exiting the Invoked Method.
+                     * It would automatically Acknowledge the Message and never retry.
+                     * MessageTransmitRules.DirectlySend will already be acknowedged as it requires a Return Value
+                     */
+                    //if (Service.IncomingMessage.TransmitRule != MessageTransmitRules.DirectlySend)
+                    //{
+                    //    AcknowledgeMessage(Service.IncomingMessage);
+                    //}
 
                     return returnValue;
                 }
